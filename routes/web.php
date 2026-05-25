@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CashflowController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\LoanDetailController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OpenBanking\AccountMappingController;
@@ -86,6 +87,9 @@ Route::get('privacy', function () {
 Route::get('terms', function () {
     return Inertia::render('terms');
 })->name('terms');
+
+Route::get('documentation', DocumentationController::class)->name('documentation.index');
+Route::get('documentation/{slug}', DocumentationController::class)->name('documentation.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('subscribe', [SubscriptionController::class, 'index'])->name('subscribe');
