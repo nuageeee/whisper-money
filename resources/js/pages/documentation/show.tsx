@@ -1,7 +1,14 @@
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
 import { type SharedData } from '@/types';
 import { __ } from '@/utils/i18n';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowUpIcon } from 'lucide-react';
+import { ArrowUpIcon, MenuIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type DocumentationDocument = {
@@ -134,7 +141,7 @@ function MermaidDocumentationArticle({ html }: { html: string }) {
     return (
         <article
             ref={articleRef}
-            className="max-w-3xl [&_.card]:rounded-xl [&_.card]:border [&_.card]:border-black/10 [&_.card]:bg-black/[0.02] [&_.card]:p-5 dark:[&_.card]:border-white/10 dark:[&_.card]:bg-white/[0.03] [&_.card_h3]:mt-0 [&_.card_h3]:mb-3 [&_.card_p]:mb-4 [&_.card_ul]:mb-0 [&_.cards-wrapper]:my-8 [&_.cards-wrapper]:grid [&_.cards-wrapper]:grid-cols-1 [&_.cards-wrapper]:gap-4 md:[&_.cards-wrapper]:grid-cols-2 [&_.documentation-mermaid]:my-6 [&_.documentation-mermaid]:overflow-x-auto [&_.documentation-mermaid]:p-5 [&_.documentation-toc]:my-8 [&_.documentation-toc]:rounded-xl [&_.documentation-toc]:border [&_.documentation-toc]:border-black/10 [&_.documentation-toc]:bg-black/[0.02] [&_.documentation-toc]:p-5 dark:[&_.documentation-toc]:border-white/10 dark:[&_.documentation-toc]:bg-white/[0.03] [&_.documentation-toc_.toc-level-3]:pl-4 [&_.documentation-toc_.toc-number]:text-[#706f6c] dark:[&_.documentation-toc_.toc-number]:text-[#A1A09A] [&_.documentation-toc_a]:no-underline [&_.documentation-toc_ol]:m-0 [&_.documentation-toc_ol]:list-none [&_.documentation-toc_ol]:space-y-2 [&_.documentation-toc_ol]:p-0 [&_.documentation-toc_p]:mb-3 [&_.documentation-toc_p]:text-sm [&_.documentation-toc_p]:font-semibold [&_a]:font-medium [&_a]:text-[#1b1b18] [&_a]:underline dark:[&_a]:text-[#EDEDEC] [&_blockquote]:my-6 [&_blockquote]:rounded-xl [&_blockquote]:border-l-4 [&_blockquote]:border-[#1b1b18] [&_blockquote]:bg-black/[0.03] [&_blockquote]:px-5 [&_blockquote]:py-4 dark:[&_blockquote]:border-[#EDEDEC] dark:[&_blockquote]:bg-white/[0.04] [&_blockquote_p]:mb-0 [&_code]:rounded [&_code]:bg-black/5 [&_code]:px-1.5 [&_code]:py-0.5 dark:[&_code]:bg-white/10 [&_h1]:mb-5 [&_h1]:text-4xl [&_h1]:leading-tight [&_h1]:font-semibold [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:border-t [&_h2]:border-black/10 [&_h2]:pt-8 [&_h2]:text-2xl [&_h2]:font-semibold dark:[&_h2]:border-white/10 [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-xl [&_h3]:font-semibold [&_li]:pl-1 [&_ol]:mb-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-6 [&_p]:mb-5 [&_p]:leading-7 [&_p]:text-[#706f6c] dark:[&_p]:text-[#A1A09A] [&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-black/10 [&_pre]:bg-black/[0.03] [&_pre]:p-5 [&_pre]:text-sm dark:[&_pre]:border-white/10 dark:[&_pre]:bg-white/[0.04] [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:mb-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6"
+            className="max-w-3xl [&_.card]:rounded-xl [&_.card]:border [&_.card]:border-black/10 [&_.card]:bg-black/[0.02] [&_.card]:p-5 dark:[&_.card]:border-white/10 dark:[&_.card]:bg-white/[0.03] [&_.card_h3]:mt-0 [&_.card_h3]:mb-3 [&_.card_p]:mb-4 [&_.card_ul]:mb-0 [&_.cards-wrapper]:my-8 [&_.cards-wrapper]:grid [&_.cards-wrapper]:grid-cols-1 [&_.cards-wrapper]:gap-4 md:[&_.cards-wrapper]:grid-cols-2 [&_.documentation-mermaid]:my-6 [&_.documentation-mermaid]:overflow-x-auto [&_.documentation-mermaid]:p-5 [&_.documentation-toc]:my-8 [&_.documentation-toc]:rounded-xl [&_.documentation-toc]:border [&_.documentation-toc]:border-black/10 [&_.documentation-toc]:bg-black/[0.02] [&_.documentation-toc]:p-5 dark:[&_.documentation-toc]:border-white/10 dark:[&_.documentation-toc]:bg-white/[0.03] [&_.documentation-toc_.toc-level-3]:pl-4 [&_.documentation-toc_.toc-number]:text-[#706f6c] dark:[&_.documentation-toc_.toc-number]:text-[#A1A09A] [&_.documentation-toc_a]:no-underline [&_.documentation-toc_ol]:m-0 [&_.documentation-toc_ol]:list-none [&_.documentation-toc_ol]:space-y-2 [&_.documentation-toc_ol]:p-0 [&_.documentation-toc_p]:mb-3 [&_.documentation-toc_p]:text-sm [&_.documentation-toc_p]:font-semibold [&_a]:font-medium [&_a]:text-[#1b1b18] [&_a]:underline dark:[&_a]:text-[#EDEDEC] [&_blockquote]:my-6 [&_blockquote]:rounded-xl [&_blockquote]:bg-black/[0.03] [&_blockquote]:px-5 [&_blockquote]:py-4 dark:[&_blockquote]:border-[#EDEDEC] dark:[&_blockquote]:bg-white/[0.04] [&_blockquote_p]:mb-0 [&_code]:rounded [&_code]:bg-black/5 [&_code]:px-1.5 [&_code]:py-0.5 dark:[&_code]:bg-white/10 [&_h1]:mb-5 [&_h1]:text-4xl [&_h1]:leading-tight [&_h1]:font-semibold [&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:scroll-mt-8 [&_h2]:border-t [&_h2]:border-black/10 [&_h2]:pt-8 [&_h2]:text-2xl [&_h2]:font-semibold dark:[&_h2]:border-white/10 [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:scroll-mt-8 [&_h3]:text-xl [&_h3]:font-semibold [&_li]:pl-1 [&_ol]:mb-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-6 [&_p]:mb-5 [&_p]:leading-7 [&_p]:text-[#706f6c] dark:[&_p]:text-[#A1A09A] [&_pre]:my-6 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-black/10 [&_pre]:bg-black/[0.03] [&_pre]:p-5 [&_pre]:text-sm dark:[&_pre]:border-white/10 dark:[&_pre]:bg-white/[0.04] [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_ul]:mb-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6"
             dangerouslySetInnerHTML={{ __html: html }}
         />
     );
@@ -146,6 +153,26 @@ export default function DocumentationShow({
     languages,
 }: DocumentationShowProps) {
     const { appUrl } = usePage<SharedData>().props;
+    const [showScrollTop, setShowScrollTop] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const updateScrollTopVisibility = () => {
+            setShowScrollTop(window.scrollY > 480);
+        };
+
+        updateScrollTopVisibility();
+        window.addEventListener('scroll', updateScrollTopVisibility, {
+            passive: true,
+        });
+
+        return () =>
+            window.removeEventListener('scroll', updateScrollTopVisibility);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     return (
         <>
@@ -170,7 +197,7 @@ export default function DocumentationShow({
 
             <div className="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
                 <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10 lg:flex-row lg:px-8 lg:py-16">
-                    <aside className="lg:w-64 lg:shrink-0">
+                    <aside className="hidden lg:block lg:w-64 lg:shrink-0">
                         <Link
                             href="/"
                             className="mb-8 inline-block text-sm text-[#706f6c] hover:text-[#1b1b18] dark:text-[#A1A09A] dark:hover:text-[#EDEDEC]"
@@ -223,6 +250,94 @@ export default function DocumentationShow({
                         <MermaidDocumentationArticle html={document.html} />
                     </main>
                 </div>
+
+                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                    <button
+                        type="button"
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="fixed bottom-6 left-6 z-50 flex size-12 items-center justify-center rounded-full border border-black/10 bg-white/60 text-[#1b1b18] shadow-lg shadow-black/10 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/80 lg:hidden dark:border-white/10 dark:bg-black/40 dark:text-[#EDEDEC] dark:shadow-black/30 dark:hover:bg-black/60"
+                        aria-label={__('Open documentation menu')}
+                    >
+                        <MenuIcon className="size-5" aria-hidden="true" />
+                    </button>
+
+                    <SheetContent side="left" className="w-80 p-0">
+                        <SheetHeader className="border-b border-black/10 px-6 py-5 text-left dark:border-white/10">
+                            <SheetTitle>{__('Documentation')}</SheetTitle>
+                            <SheetDescription>
+                                {__('Choose a page or language.')}
+                            </SheetDescription>
+                        </SheetHeader>
+
+                        <div className="flex flex-col gap-8 px-6 py-6">
+                            <Link
+                                href="/"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="text-sm text-[#706f6c] hover:text-[#1b1b18] dark:text-[#A1A09A] dark:hover:text-[#EDEDEC]"
+                            >
+                                {__('\u2190 Back to home')}
+                            </Link>
+
+                            <div className="flex flex-wrap gap-2">
+                                {languages.map((language) => (
+                                    <Link
+                                        key={language.locale}
+                                        href={language.url}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className={
+                                            language.active
+                                                ? 'rounded-full bg-[#1b1b18] px-3 py-1 text-xs font-medium text-white dark:bg-[#EDEDEC] dark:text-[#1b1b18]'
+                                                : 'rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-[#706f6c] hover:text-[#1b1b18] dark:border-white/10 dark:text-[#A1A09A] dark:hover:text-[#EDEDEC]'
+                                        }
+                                        aria-current={
+                                            language.active ? 'true' : undefined
+                                        }
+                                    >
+                                        {language.label}
+                                    </Link>
+                                ))}
+                            </div>
+
+                            <nav aria-label={__('Documentation')}>
+                                <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-[#706f6c] uppercase dark:text-[#A1A09A]">
+                                    {__('Documentation')}
+                                </p>
+                                <div className="flex flex-col gap-1">
+                                    {navigation.map((item) => (
+                                        <Link
+                                            key={item.slug}
+                                            href={item.url}
+                                            onClick={() =>
+                                                setMobileMenuOpen(false)
+                                            }
+                                            className={
+                                                item.active
+                                                    ? 'rounded-lg bg-[#1b1b18] px-3 py-2 text-sm font-medium text-white dark:bg-[#EDEDEC] dark:text-[#1b1b18]'
+                                                    : 'rounded-lg px-3 py-2 text-sm text-[#706f6c] hover:bg-black/5 hover:text-[#1b1b18] dark:text-[#A1A09A] dark:hover:bg-white/10 dark:hover:text-[#EDEDEC]'
+                                            }
+                                        >
+                                            {__(item.title)}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </nav>
+                        </div>
+                    </SheetContent>
+                </Sheet>
+
+                <button
+                    type="button"
+                    onClick={scrollToTop}
+                    className={
+                        showScrollTop
+                            ? 'fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-3 text-sm font-medium text-[#1b1b18] shadow-lg shadow-black/10 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/80 dark:border-white/10 dark:bg-black/40 dark:text-[#EDEDEC] dark:shadow-black/30 dark:hover:bg-black/60'
+                            : 'pointer-events-none fixed right-6 bottom-6 z-50 flex translate-y-3 items-center gap-2 rounded-full border border-black/10 bg-white/60 px-4 py-3 text-sm font-medium text-[#1b1b18] opacity-0 shadow-lg shadow-black/10 backdrop-blur-md transition-all duration-200 dark:border-white/10 dark:bg-black/40 dark:text-[#EDEDEC] dark:shadow-black/30'
+                    }
+                    aria-label={__('Scroll to top')}
+                >
+                    <ArrowUpIcon className="size-4" aria-hidden="true" />
+                    <span>{__('Top')}</span>
+                </button>
             </div>
         </>
     );
