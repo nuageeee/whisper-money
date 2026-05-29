@@ -23,7 +23,7 @@ class UserMonthPeriodService
      */
     public function current(User $user, ?CarbonInterface $date = null): array
     {
-        return $this->monthContaining($user, $date ?? Carbon::now());
+        return $this->monthContaining($user, $date ?? Carbon::now($user->timezone));
     }
 
     /**
@@ -37,7 +37,7 @@ class UserMonthPeriodService
         return [
             'from' => $start,
             'to' => $to,
-            'end_inclusive' => $to->copy()->subDay(),
+            'end_inclusive' => $to->copy()->subDay()->endOfDay(),
         ];
     }
 

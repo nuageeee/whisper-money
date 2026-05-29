@@ -87,7 +87,7 @@ class CashflowAnalyticsController extends Controller
             $months = $validated['months'] ?? 12;
             $endPeriod = $this->userMonthPeriodService->monthContaining(
                 $user,
-                isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now(),
+                isset($validated['to']) ? Carbon::parse($validated['to']) : Carbon::now($user->timezone),
             );
             $end = $endPeriod['end_inclusive'];
             $start = $endPeriod['from']->copy()->subMonthsNoOverflow($months - 1);
