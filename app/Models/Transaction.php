@@ -117,27 +117,35 @@ class Transaction extends Model
             $query->where('amount', '<=', $filters['amount_max'] * 100);
         }
 
-        if (! empty($filters['category_ids'])) {
-            $ids = collect($filters['category_ids']);
-            $hasUncategorized = $ids->contains('uncategorized');
-            $realIds = $ids->reject(fn ($id) => $id === 'uncategorized')->values()->all();
+        $hasCategoryFilter = ! empty($filters['category_ids']);
+        $hasLabelFilter = ! empty($filters['label_ids']);
 
-            $query->where(function (Builder $q) use ($realIds, $hasUncategorized) {
-                if (! empty($realIds)) {
-                    $q->whereIn('category_id', $realIds);
+        if ($hasCategoryFilter || $hasLabelFilter) {
+            $query->where(function (Builder $q) use ($filters, $hasCategoryFilter, $hasLabelFilter) {
+                if ($hasCategoryFilter) {
+                    $ids = collect($filters['category_ids']);
+                    $hasUncategorized = $ids->contains('uncategorized');
+                    $realIds = $ids->reject(fn ($id) => $id === 'uncategorized')->values()->all();
+
+                    $q->where(function (Builder $categoryQuery) use ($realIds, $hasUncategorized) {
+                        if (! empty($realIds)) {
+                            $categoryQuery->whereIn('category_id', $realIds);
+                        }
+                        if ($hasUncategorized) {
+                            $categoryQuery->orWhereNull('category_id');
+                        }
+                    });
                 }
-                if ($hasUncategorized) {
-                    $q->orWhereNull('category_id');
+
+                if ($hasLabelFilter) {
+                    $method = $hasCategoryFilter ? 'orWhereHas' : 'whereHas';
+                    $q->{$method}('labels', fn (Builder $labelQuery) => $labelQuery->whereIn('labels.id', $filters['label_ids']));
                 }
             });
         }
 
         if (! empty($filters['account_ids'])) {
             $query->whereIn('account_id', $filters['account_ids']);
-        }
-
-        if (! empty($filters['label_ids'])) {
-            $query->whereHas('labels', fn (Builder $q) => $q->whereIn('labels.id', $filters['label_ids']));
         }
 
         if (! empty($filters['creditor_name'])) {

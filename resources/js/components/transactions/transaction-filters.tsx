@@ -37,6 +37,8 @@ interface TransactionFiltersProps {
     isKeySet: boolean;
     actions?: ReactNode;
     hideAccountFilter?: boolean;
+    hideSearch?: boolean;
+    inlineCategoryLabel?: boolean;
 }
 
 export function TransactionFilters({
@@ -47,16 +49,13 @@ export function TransactionFilters({
     accounts,
     actions,
     hideAccountFilter = false,
+    hideSearch = false,
+    inlineCategoryLabel = false,
 }: TransactionFiltersProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
-    const [labelDropdownOpen, setLabelDropdownOpen] = useState(false);
     const [searchText, setSearchText] = useState(filters.searchText);
     const [creditorName, setCreditorName] = useState(filters.creditorName);
     const [debtorName, setDebtorName] = useState(filters.debtorName);
-    const isUncategorizedSelected = filters.categoryIds.includes(
-        UNCATEGORIZED_CATEGORY_ID,
-    );
 
     // Debounce text filter updates
     useEffect(() => {
@@ -101,7 +100,7 @@ export function TransactionFilters({
         onFiltersChange({ ...filters, categoryIds: newCategoryIds });
     }
 
-    function handleAccountToggle(accountId: number) {
+    function handleAccountToggle(accountId: string) {
         const newAccountIds = filters.accountIds.includes(accountId)
             ? filters.accountIds.filter((id) => id !== accountId)
             : [...filters.accountIds, accountId];
@@ -140,22 +139,42 @@ export function TransactionFilters({
         (filters.dateTo ? 1 : 0) +
         (filters.amountMin !== null ? 1 : 0) +
         (filters.amountMax !== null ? 1 : 0) +
-        filters.categoryIds.length +
-        filters.labelIds.length +
         (filters.creditorName ? 1 : 0) +
         (filters.debtorName ? 1 : 0) +
+        (inlineCategoryLabel
+            ? 0
+            : filters.categoryIds.length + filters.labelIds.length) +
         (hideAccountFilter ? 0 : filters.accountIds.length);
 
     return (
         <div className="space-y-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <div className="flex w-full flex-row items-center gap-2">
-                    <Input
-                        placeholder={__('Search description or notes...')}
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        className="min-w-0 flex-1 md:min-w-[350px]"
-                    />
+                <div className="flex w-full flex-wrap items-center gap-2">
+                    {!hideSearch && (
+                        <Input
+                            placeholder={__('Search description or notes...')}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            className="min-w-0 flex-1 md:min-w-[350px]"
+                        />
+                    )}
+
+                    {inlineCategoryLabel && (
+                        <>
+                            <CategoryMultiSelect
+                                categories={categories}
+                                selectedIds={filters.categoryIds}
+                                onToggle={handleCategoryToggle}
+                                triggerClassName="w-[180px]"
+                            />
+                            <LabelMultiSelect
+                                labels={labels}
+                                selectedIds={filters.labelIds}
+                                onToggle={handleLabelToggle}
+                                triggerClassName="w-[160px]"
+                            />
+                        </>
+                    )}
 
                     <Popover open={isOpen} onOpenChange={setIsOpen}>
                         <PopoverTrigger asChild>
@@ -295,254 +314,37 @@ export function TransactionFilters({
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <FormLabel>{__('Categories')}</FormLabel>
-                                    <div className="pt-2">
-                                        <Popover
-                                            open={categoryDropdownOpen}
-                                            onOpenChange={
-                                                setCategoryDropdownOpen
-                                            }
-                                        >
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className="w-full justify-between"
-                                                >
-                                                    {filters.categoryIds
-                                                        .length > 0 ? (
-                                                        <span className="truncate">
-                                                            {
-                                                                filters
-                                                                    .categoryIds
-                                                                    .length
-                                                            }{' '}
-                                                            selected
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-muted-foreground">
-                                                            {__(
-                                                                'Select categories...',
-                                                            )}
-                                                        </span>
-                                                    )}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent
-                                                className="w-full p-0"
-                                                align="start"
-                                            >
-                                                <Command>
-                                                    <CommandInput
-                                                        placeholder={__(
-                                                            'Search categories...',
-                                                        )}
-                                                    />
-                                                    <CommandList>
-                                                        <CommandEmpty>
-                                                            {__(
-                                                                'No category found.',
-                                                            )}
-                                                        </CommandEmpty>
-                                                        <CommandItem
-                                                            onSelect={() =>
-                                                                handleCategoryToggle(
-                                                                    UNCATEGORIZED_CATEGORY_ID,
-                                                                )
-                                                            }
-                                                        >
-                                                            <div
-                                                                className={cn(
-                                                                    'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
-                                                                    isUncategorizedSelected
-                                                                        ? 'bg-primary/10 text-primary-foreground'
-                                                                        : 'opacity-50 [&_svg]:invisible',
-                                                                )}
-                                                            >
-                                                                <Check className="size-3" />
-                                                            </div>
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                                                    <Icons.HelpCircle className="h-3 w-3 text-zinc-500" />
-                                                                </div>
-                                                                {__(
-                                                                    'Uncategorized',
-                                                                )}
-                                                            </div>
-                                                        </CommandItem>
-                                                        {categories.map(
-                                                            (category) => {
-                                                                const isSelected =
-                                                                    filters.categoryIds.includes(
-                                                                        category.id,
-                                                                    );
-                                                                const colorClasses =
-                                                                    getCategoryColorClasses(
-                                                                        category.color,
-                                                                    );
-                                                                return (
-                                                                    <CommandItem
-                                                                        key={
-                                                                            category.id
-                                                                        }
-                                                                        onSelect={() =>
-                                                                            handleCategoryToggle(
-                                                                                category.id,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <div
-                                                                            className={cn(
-                                                                                'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
-                                                                                isSelected
-                                                                                    ? 'bg-primary/10 text-primary-foreground'
-                                                                                    : 'opacity-50 [&_svg]:invisible',
-                                                                            )}
-                                                                        >
-                                                                            <Check className="size-3" />
-                                                                        </div>
-                                                                        <div className="flex items-center gap-2">
-                                                                            <div
-                                                                                className={cn(
-                                                                                    'flex h-5 w-5 items-center justify-center rounded-full',
-                                                                                    colorClasses.bg,
-                                                                                )}
-                                                                            >
-                                                                                <CategoryIcon
-                                                                                    category={
-                                                                                        category
-                                                                                    }
-                                                                                    size={
-                                                                                        4
-                                                                                    }
-                                                                                />
-                                                                            </div>
-                                                                            <span>
-                                                                                {
-                                                                                    category.name
-                                                                                }
-                                                                            </span>
-                                                                        </div>
-                                                                    </CommandItem>
-                                                                );
-                                                            },
-                                                        )}
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
+                                {!inlineCategoryLabel && (
+                                    <div className="space-y-2">
+                                        <FormLabel>
+                                            {__('Categories')}
+                                        </FormLabel>
+                                        <div className="pt-2">
+                                            <CategoryMultiSelect
+                                                categories={categories}
+                                                selectedIds={
+                                                    filters.categoryIds
+                                                }
+                                                onToggle={handleCategoryToggle}
+                                                triggerClassName="w-full"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
-                                <div className="space-y-2">
-                                    <FormLabel>{__('Labels')}</FormLabel>
-                                    <div className="pt-2">
-                                        <Popover
-                                            open={labelDropdownOpen}
-                                            onOpenChange={setLabelDropdownOpen}
-                                        >
-                                            <PopoverTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className="w-full justify-between"
-                                                >
-                                                    {filters.labelIds.length >
-                                                    0 ? (
-                                                        <span className="truncate">
-                                                            {
-                                                                filters.labelIds
-                                                                    .length
-                                                            }{' '}
-                                                            selected
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-muted-foreground">
-                                                            {__(
-                                                                'Select labels...',
-                                                            )}
-                                                        </span>
-                                                    )}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent
-                                                className="w-full p-0"
-                                                align="start"
-                                            >
-                                                <Command>
-                                                    <CommandInput
-                                                        placeholder={__(
-                                                            'Search labels...',
-                                                        )}
-                                                    />
-                                                    <CommandList>
-                                                        <CommandEmpty>
-                                                            {__(
-                                                                'No labels found.',
-                                                            )}
-                                                        </CommandEmpty>
-                                                        {labels.map((label) => {
-                                                            const isSelected =
-                                                                filters.labelIds.includes(
-                                                                    label.id,
-                                                                );
-                                                            const colorClasses =
-                                                                getLabelColorClasses(
-                                                                    label.color,
-                                                                );
-                                                            return (
-                                                                <CommandItem
-                                                                    key={
-                                                                        label.id
-                                                                    }
-                                                                    onSelect={() =>
-                                                                        handleLabelToggle(
-                                                                            label.id,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <div
-                                                                        className={cn(
-                                                                            'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
-                                                                            isSelected
-                                                                                ? 'bg-primary/10 text-primary-foreground'
-                                                                                : 'opacity-50 [&_svg]:invisible',
-                                                                        )}
-                                                                    >
-                                                                        <Check className="size-3" />
-                                                                    </div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div
-                                                                            className={cn(
-                                                                                'flex h-5 w-5 items-center justify-center rounded-full',
-                                                                                colorClasses.bg,
-                                                                            )}
-                                                                        >
-                                                                            <Tag
-                                                                                className={cn(
-                                                                                    'h-3 w-3',
-                                                                                    colorClasses.text,
-                                                                                )}
-                                                                            />
-                                                                        </div>
-                                                                        <span>
-                                                                            {
-                                                                                label.name
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                </CommandItem>
-                                                            );
-                                                        })}
-                                                    </CommandList>
-                                                </Command>
-                                            </PopoverContent>
-                                        </Popover>
+                                {!inlineCategoryLabel && (
+                                    <div className="space-y-2">
+                                        <FormLabel>{__('Labels')}</FormLabel>
+                                        <div className="pt-2">
+                                            <LabelMultiSelect
+                                                labels={labels}
+                                                selectedIds={filters.labelIds}
+                                                onToggle={handleLabelToggle}
+                                                triggerClassName="w-full"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {!hideAccountFilter && (
                                     <div className="space-y-2">
@@ -601,6 +403,198 @@ export function TransactionFilters({
                 {actions ? <div className="w-full">{actions}</div> : null}
             </div>
         </div>
+    );
+}
+
+interface CategoryMultiSelectProps {
+    categories: Category[];
+    selectedIds: string[];
+    onToggle: (id: string) => void;
+    triggerClassName?: string;
+}
+
+function CategoryMultiSelect({
+    categories,
+    selectedIds,
+    onToggle,
+    triggerClassName,
+}: CategoryMultiSelectProps) {
+    const [open, setOpen] = useState(false);
+    const isUncategorizedSelected = selectedIds.includes(
+        UNCATEGORIZED_CATEGORY_ID,
+    );
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn('justify-between', triggerClassName)}
+                >
+                    {selectedIds.length > 0 ? (
+                        <span className="truncate">
+                            {selectedIds.length} {__('selected')}
+                        </span>
+                    ) : (
+                        <span className="text-muted-foreground">
+                            {__('Categories')}
+                        </span>
+                    )}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+                <Command>
+                    <CommandInput placeholder={__('Search categories...')} />
+                    <CommandList>
+                        <CommandEmpty>{__('No category found.')}</CommandEmpty>
+                        <CommandItem
+                            onSelect={() => onToggle(UNCATEGORIZED_CATEGORY_ID)}
+                        >
+                            <div
+                                className={cn(
+                                    'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
+                                    isUncategorizedSelected
+                                        ? 'bg-primary/10 text-primary-foreground'
+                                        : 'opacity-50 [&_svg]:invisible',
+                                )}
+                            >
+                                <Check className="size-3" />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+                                    <Icons.HelpCircle className="h-3 w-3 text-zinc-500" />
+                                </div>
+                                {__('Uncategorized')}
+                            </div>
+                        </CommandItem>
+                        {categories.map((category) => {
+                            const isSelected = selectedIds.includes(
+                                category.id,
+                            );
+                            const colorClasses = getCategoryColorClasses(
+                                category.color,
+                            );
+                            return (
+                                <CommandItem
+                                    key={category.id}
+                                    onSelect={() => onToggle(category.id)}
+                                >
+                                    <div
+                                        className={cn(
+                                            'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
+                                            isSelected
+                                                ? 'bg-primary/10 text-primary-foreground'
+                                                : 'opacity-50 [&_svg]:invisible',
+                                        )}
+                                    >
+                                        <Check className="size-3" />
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className={cn(
+                                                'flex h-5 w-5 items-center justify-center rounded-full',
+                                                colorClasses.bg,
+                                            )}
+                                        >
+                                            <CategoryIcon category={category} />
+                                        </div>
+                                        <span>{category.name}</span>
+                                    </div>
+                                </CommandItem>
+                            );
+                        })}
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    );
+}
+
+interface LabelMultiSelectProps {
+    labels: Label[];
+    selectedIds: string[];
+    onToggle: (id: string) => void;
+    triggerClassName?: string;
+}
+
+function LabelMultiSelect({
+    labels,
+    selectedIds,
+    onToggle,
+    triggerClassName,
+}: LabelMultiSelectProps) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn('justify-between', triggerClassName)}
+                >
+                    {selectedIds.length > 0 ? (
+                        <span className="truncate">
+                            {selectedIds.length} {__('selected')}
+                        </span>
+                    ) : (
+                        <span className="text-muted-foreground">
+                            {__('Labels')}
+                        </span>
+                    )}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+                <Command>
+                    <CommandInput placeholder={__('Search labels...')} />
+                    <CommandList>
+                        <CommandEmpty>{__('No labels found.')}</CommandEmpty>
+                        {labels.map((label) => {
+                            const isSelected = selectedIds.includes(label.id);
+                            const colorClasses = getLabelColorClasses(
+                                label.color,
+                            );
+                            return (
+                                <CommandItem
+                                    key={label.id}
+                                    onSelect={() => onToggle(label.id)}
+                                >
+                                    <div
+                                        className={cn(
+                                            'mr-1 flex size-4 items-center justify-center rounded-sm border border-primary p-1',
+                                            isSelected
+                                                ? 'bg-primary/10 text-primary-foreground'
+                                                : 'opacity-50 [&_svg]:invisible',
+                                        )}
+                                    >
+                                        <Check className="size-3" />
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className={cn(
+                                                'flex h-5 w-5 items-center justify-center rounded-full',
+                                                colorClasses.bg,
+                                            )}
+                                        >
+                                            <Tag
+                                                className={cn(
+                                                    'h-3 w-3',
+                                                    colorClasses.text,
+                                                )}
+                                            />
+                                        </div>
+                                        <span>{label.name}</span>
+                                    </div>
+                                </CommandItem>
+                            );
+                        })}
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     );
 }
 

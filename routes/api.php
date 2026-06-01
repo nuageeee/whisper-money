@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountBalanceController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AnalysisController;
 use App\Http\Controllers\Api\CashflowAnalyticsController;
 use App\Http\Controllers\Api\DashboardAnalyticsController;
 use App\Http\Controllers\Api\ImportDataController;
@@ -56,4 +57,7 @@ Route::middleware(['web', 'auth'])->group(function () {
         Route::get('trend', [CashflowAnalyticsController::class, 'trend']);
         Route::get('breakdown', [CashflowAnalyticsController::class, 'breakdown']);
     });
+
+    // Expense / income analysis
+    Route::get('analysis', [AnalysisController::class, 'index'])->name('api.analysis.index');
 });

@@ -1,9 +1,10 @@
 import { index as accountsIndex } from '@/actions/App/Http/Controllers/AccountController';
 import { index as budgetsIndex } from '@/actions/App/Http/Controllers/BudgetController';
 import { index as transactionsIndex } from '@/actions/App/Http/Controllers/TransactionController';
-import { cashflow, dashboard } from '@/routes';
+import { analysis, cashflow, dashboard } from '@/routes';
 import { Features, NavItem } from '@/types';
 import {
+    ChartColumnBig,
     CreditCard,
     LayoutGrid,
     PiggyBank,
@@ -18,6 +19,7 @@ const mobileLabels: Record<string, Record<string, string>> = {
         accounts: 'Accounts',
         transactions: 'Movements',
         budgets: 'Budget',
+        analysis: 'Analysis',
     },
     es: {
         dashboard: 'Inicio',
@@ -25,6 +27,7 @@ const mobileLabels: Record<string, Record<string, string>> = {
         accounts: 'Cuentas',
         transactions: 'Movim.',
         budgets: 'Presup.',
+        analysis: 'Análisis',
     },
 };
 
@@ -74,6 +77,13 @@ export function getMainNavItems(features: Features, locale: string): NavItem[] {
             mobileTitle: getMobileLabel('budgets', locale),
             href: budgetsIndex(),
             icon: PiggyBank,
+        },
+        {
+            type: 'nav-item',
+            title: 'Analysis',
+            mobileTitle: getMobileLabel('analysis', locale),
+            href: analysis(),
+            icon: ChartColumnBig,
         },
     );
 
