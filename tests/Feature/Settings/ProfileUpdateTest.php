@@ -48,9 +48,7 @@ test('profile accepts new latam primary currency', function () {
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'currency_code' => 'ARS',
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => 'ARS',        ]);
 
     $response
         ->assertSessionHasNoErrors()
@@ -67,9 +65,7 @@ test('profile accepts Pakistani rupee as primary currency', function () {
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'currency_code' => 'PKR',
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => 'PKR',        ]);
 
     $response
         ->assertSessionHasNoErrors()
@@ -86,9 +82,7 @@ test('profile accepts Brazilian real as primary currency', function () {
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'currency_code' => 'BRL',
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => 'BRL',        ]);
 
     $response
         ->assertSessionHasNoErrors()
@@ -105,9 +99,7 @@ test('profile accepts Saudi riyal as primary currency', function () {
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'currency_code' => 'SAR',
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => 'SAR',        ]);
 
     $response
         ->assertSessionHasNoErrors()
@@ -124,9 +116,7 @@ test('profile rejects bitcoin as primary currency', function () {
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'currency_code' => 'BTC',
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => 'BTC',        ]);
 
     $response->assertSessionHasErrors(['currency_code']);
 });
@@ -174,9 +164,7 @@ test('email verification status is unchanged when the email address is unchanged
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => $user->email,
-            'currency_code' => $user->currency_code,
-            'month_start_day' => 1,
-        ]);
+            'currency_code' => $user->currency_code,        ]);
 
     $response
         ->assertSessionHasNoErrors()
