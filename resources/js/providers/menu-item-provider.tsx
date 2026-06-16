@@ -26,6 +26,13 @@ const mobileLabels: Record<string, Record<string, string>> = {
         transactions: 'Movim.',
         budgets: 'Presup.',
     },
+    fr: {
+        dashboard: 'Accueil',
+        cashflow: 'Trésorerie',
+        accounts: 'Comptes',
+        transactions: 'Mouvements',
+        budgets: 'Budget',
+    },
 };
 
 function getMobileLabel(key: string, locale: string): string {
