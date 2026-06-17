@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('personal_subscriptions', function (Blueprint $table) {
-        $table->id();
-        $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-        $table->string('name');
-        $table->decimal('amount', 8, 2);
-        $table->string('currency', 3)->default('EUR');
-        $table->enum('billing_cycle', ['weekly', 'monthly', 'biweekly', 'yearly'])->default('monthly');
-        $table->date('next_billing_date');
-        $table->string('color')->nullable();
-        $table->timestamps();
+            $table->id();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->decimal('amount', 8, 2);
+            $table->string('currency', 3)->default('EUR');
+            $table->enum('billing_cycle', ['weekly', 'monthly', 'biweekly', 'yearly'])->default('monthly');
+            $table->date('next_billing_date');
+            $table->string('color')->nullable();
+            $table->timestamps();
         });
     }
 
