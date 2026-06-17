@@ -1,9 +1,11 @@
 import { index as accountsIndex } from '@/actions/App/Http/Controllers/AccountController';
 import { index as budgetsIndex } from '@/actions/App/Http/Controllers/BudgetController';
 import { index as transactionsIndex } from '@/actions/App/Http/Controllers/TransactionController';
+import { index as PersonalSubscriptionIndex } from '@/actions/App/Http/Controllers/PersonalSubscriptionController';
 import { cashflow, dashboard } from '@/routes';
 import { Features, NavItem } from '@/types';
 import {
+    CalendarSync,
     CreditCard,
     LayoutGrid,
     PiggyBank,
@@ -81,6 +83,13 @@ export function getMainNavItems(features: Features, locale: string): NavItem[] {
             mobileTitle: getMobileLabel('budgets', locale),
             href: budgetsIndex(),
             icon: PiggyBank,
+        },
+        {
+            type: 'nav-item',
+            title: 'Subscriptions',
+            mobileTitle: getMobileLabel('budgets', locale),
+            href: PersonalSubscriptionIndex(),
+            icon: CalendarSync,
         },
     );
 

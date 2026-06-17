@@ -23,6 +23,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserLeadController;
+use App\Http\Controllers\PersonalSubscriptionController;
 use App\Models\Bank;
 use App\Services\LandingAuthOverrideService;
 use Illuminate\Http\Request;
@@ -166,6 +167,11 @@ Route::middleware(['auth', 'verified', 'onboarded', 'subscribed'])->group(functi
     Route::get('budgets/{budget}', [BudgetController::class, 'show'])->name('budgets.show');
     Route::patch('budgets/{budget}', [BudgetController::class, 'update'])->name('budgets.update');
     Route::delete('budgets/{budget}', [BudgetController::class, 'destroy'])->name('budgets.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('personal-subscriptions', PersonalSubscriptionController::class)
+        ->only(['index', 'store', 'destroy']);
 });
 
 require __DIR__.'/settings.php';

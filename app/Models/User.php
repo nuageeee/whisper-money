@@ -368,4 +368,9 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
 
         return "{$timestamp}_{$this->getKey()}_{$originalEmail}";
     }
+
+    public function personalSubscriptions()
+    {
+        return $this->hasMany(PersonalSubscription::class);
+    }
 }
